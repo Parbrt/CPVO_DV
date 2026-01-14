@@ -3,17 +3,28 @@ import pandas as pd
 import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
-from utils import get_sector, get_specie_group
+from utils import get_sector, get_specie_group, get_company_group, deduplicate_within_species
 
 st.set_page_config(page_title="Tableau de bord CPVO", layout="wide")
+
+@st.dialog("Informations")
+def name_dialog(nomLatin, nomEn):
+    st.markdown(f"Nom Latin: {nomLatin}")
+    st.markdown(f"Nom Anglais: {nomEn}")
 
 @st.cache_data
 def load_data():
     df = pd.read_csv('data/dataset_cleaned.csv')
+
+    df = df[~((df['COUNTRYID'] == 'QZ') & (df['PublicationType'] == 'National Listing'))]
+
+    initial_count = len(df)
+    df = deduplicate_within_species(df)
+    dedup_count = len(df)
+
     df['APPLICATIONDATE'] = pd.to_datetime(df['APPLICATIONDATE'], format='%d/%m/%Y', errors='coerce')
     df['Year'] = df['APPLICATIONDATE'].dt.year
 
-    # Filtrer les lignes sans année valide
     df = df.dropna(subset=['Year'])
     df['Year'] = df['Year'].astype(int)
 
@@ -21,6 +32,8 @@ def load_data():
 
     all_species_list = df['SPECIEID'].dropna().unique().tolist()
     df['SpecieGroup'] = df['SPECIEID'].apply(lambda x: get_specie_group(x, all_species_list))
+
+    df['CompanyGroup'] = df['FINAL_APPLICANT'].apply(get_company_group)
 
     return df
 
@@ -51,7 +64,7 @@ selected_species = st.sidebar.multiselect(
     default=[]
 )
 
-all_applicants = sorted([x for x in df['FINAL_APPLICANT'].unique() if pd.notna(x)])
+all_applicants = sorted([x for x in df['CompanyGroup'].unique() if pd.notna(x)])
 selected_applicants = st.sidebar.multiselect(
     "Entreprises (laisser vide = toutes)",
     options=all_applicants,
@@ -65,15 +78,16 @@ df_filtered = df[
 ].copy()
 
 # Filtrer les NaN dans les colonnes critiques
-df_filtered = df_filtered.dropna(subset=['FINAL_APPLICANT', 'SpecieGroup'])
+df_filtered = df_filtered.dropna(subset=['CompanyGroup', 'SpecieGroup'])
 
 if selected_species:
     df_filtered = df_filtered[df_filtered['SpecieGroup'].isin(selected_species)]
 
 if selected_applicants:
-    df_filtered = df_filtered[df_filtered['FINAL_APPLICANT'].isin(selected_applicants)]
+    df_filtered = df_filtered[df_filtered['CompanyGroup'].isin(selected_applicants)]
 
 st.title("Tableau de bord des variétés végétales CPVO")
+st.markdown("**Données CPVO** (National Listing de QZ exclus, dédupliquées par BREEDERREFERENCE/DENOMINATION au sein de chaque espèce)")
 st.markdown(f"**{len(df_filtered)}** variétés affichées sur **{len(df)}** au total")
 
 st.header("1. Évolution annuelle par type de protection")
@@ -116,20 +130,36 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Top 15 espèces")
     top_species = df_filtered['SpecieGroup'].value_counts().head(15).reset_index()
-    top_species.columns = ['Espèce', 'Count']
+    top_species.columns = ['SpecieGroup', 'Count']
+
+    species_names = df_filtered.groupby('SpecieGroup')['SPECIENAME'].first().reset_index()
+    top_species = top_species.merge(species_names, on='SpecieGroup', how='left')
+
+    top_species['DisplayName'] = top_species['SPECIENAME'].apply(lambda x: x[:15] if isinstance(x, str) else x)
 
     fig2 = px.bar(
         top_species,
-        y='Espèce',
+        y='DisplayName',
         x='Count',
         orientation='h',
         title='Espèces les plus représentées',
-        labels={'Count': 'Nombre de variétés'},
+        labels={'Count': 'Nombre de variétés', 'DisplayName': 'Espèce'},
         color='Count',
         color_continuous_scale='Blues'
     )
     fig2.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
-    st.plotly_chart(fig2, use_container_width=True)
+
+    selected = st.plotly_chart(fig2, use_container_width=True, on_select="rerun", key="species_chart")
+
+    if selected and selected.selection and selected.selection.points:
+        clicked_display_name = selected.selection.points[0]['y']
+
+        clicked_row = top_species[top_species['DisplayName'] == clicked_display_name].iloc[0]
+        clicked_species_group = clicked_row['SpecieGroup']
+
+        species_info = df_filtered[df_filtered['SpecieGroup'] == clicked_species_group][['SPECIENAME', 'SPECIENAMEEN']].iloc[0]
+
+        name_dialog(species_info['SPECIENAME'], species_info['SPECIENAMEEN'])
 
 with col2:
     st.subheader("Répartition par secteur")
@@ -154,7 +184,7 @@ st.header("3. Top entreprises en dépôts de titres")
 col1, col2 = st.columns([2, 1])
 
 with col1:
-    top_companies = df_filtered['FINAL_APPLICANT'].value_counts().head(20).reset_index()
+    top_companies = df_filtered['CompanyGroup'].value_counts().head(20).reset_index()
     top_companies.columns = ['Entreprise', 'Count']
 
     fig4 = px.bar(
@@ -172,13 +202,13 @@ with col1:
 
 with col2:
     st.subheader("Statistiques")
-    total_companies = df_filtered['FINAL_APPLICANT'].nunique()
+    total_companies = df_filtered['CompanyGroup'].nunique()
     st.metric("Nombre d'entreprises", total_companies)
 
     avg_per_company = len(df_filtered) / total_companies if total_companies > 0 else 0
     st.metric("Moyenne par entreprise", f"{avg_per_company:.1f}")
 
-    top_10_count = df_filtered['FINAL_APPLICANT'].value_counts().head(10).sum()
+    top_10_count = df_filtered['CompanyGroup'].value_counts().head(10).sum()
     concentration = top_10_count / len(df_filtered) * 100 if len(df_filtered) > 0 else 0
     st.metric("Concentration Top 10", f"{concentration:.1f}%")
 
@@ -216,12 +246,12 @@ st.plotly_chart(fig5, use_container_width=True)
 
 st.subheader("Stratégies des principales entreprises")
 
-top_10_companies = df_filtered['FINAL_APPLICANT'].value_counts().head(10).index.tolist()
-df_company_strategy = df_filtered[df_filtered['FINAL_APPLICANT'].isin(top_10_companies)]
-df_company_strategy = df_company_strategy.groupby(['FINAL_APPLICANT', 'Year', 'PublicationType']).size().reset_index(name='Count')
+top_10_companies = df_filtered['CompanyGroup'].value_counts().head(10).index.tolist()
+df_company_strategy = df_filtered[df_filtered['CompanyGroup'].isin(top_10_companies)]
+df_company_strategy = df_company_strategy.groupby(['CompanyGroup', 'Year', 'PublicationType']).size().reset_index(name='Count')
 
 df_company_pivot = df_company_strategy.pivot_table(
-    index=['FINAL_APPLICANT', 'Year'],
+    index=['CompanyGroup', 'Year'],
     columns='PublicationType',
     values='Count',
     fill_value=0
@@ -234,9 +264,9 @@ fig6 = px.line(
     df_company_pivot,
     x='Year',
     y='PBR_Percentage',
-    color='FINAL_APPLICANT',
+    color='CompanyGroup',
     title='Évolution de la stratégie PBR par entreprise (Top 10)',
-    labels={'PBR_Percentage': '% Plant Breeders Rights', 'Year': 'Année', 'FINAL_APPLICANT': 'Entreprise'},
+    labels={'PBR_Percentage': '% Plant Breeders Rights', 'Year': 'Année', 'CompanyGroup': 'Entreprise'},
     markers=True
 )
 
@@ -251,7 +281,7 @@ dimension = st.selectbox(
 )
 
 if dimension == 'Entreprise':
-    group_col = 'FINAL_APPLICANT'
+    group_col = 'CompanyGroup'
     top_items = df_filtered[group_col].value_counts().head(10).index.tolist()
 elif dimension == 'Secteur':
     group_col = 'Sector'

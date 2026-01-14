@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def main():
     dataset = pd.read_csv('data/dataset.csv')
     print(f"Total Donnée: {len(dataset)}")
