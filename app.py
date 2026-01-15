@@ -14,7 +14,8 @@ import re
 import unicodedata
 
 # Configuration du client API
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+
+client = genai.Client(api_key="")
 
 
 # --- FONCTIONS UTILITAIRES ---
@@ -253,7 +254,7 @@ def load_data(file_content=None):
     if file_content is not None:
         df = pd.read_csv(BytesIO(file_content))
     else:
-        df = pd.read_csv('data/dataset_cleaned.csv')
+        df = pd.read_csv('data/dataset_cleaned_name.csv')
     print(len(df))
 
     # Define the mapping for GROUPVARIETAL
