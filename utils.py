@@ -59,6 +59,8 @@ def normalize_reference(text):
 
 
 def deduplicate_within_species(df):
+    import pandas as pd
+
     df['_compare_ref'] = df.apply(
         lambda row: row['BREEDERREFERENCE'] if row['BREEDERREFERENCE'] and str(row['BREEDERREFERENCE']) != 'nan'
         else row['DENOMINATION'],
@@ -67,8 +69,16 @@ def deduplicate_within_species(df):
 
     df['_normalized_ref'] = df['_compare_ref'].apply(normalize_reference)
 
+    # Parse dates for sorting (use APPLICATIONDATE, fallback to GRANTDATE)
+    df['_app_date'] = pd.to_datetime(df['APPLICATIONDATE'], format='%d/%m/%Y', errors='coerce')
+    df['_grant_date'] = pd.to_datetime(df['GRANTDATE'], format='%d/%m/%Y', errors='coerce')
+    df['_sort_date'] = df['_app_date'].fillna(df['_grant_date'])
+
+    # Sort by date (earliest first) to keep earliest when deduplicating
+    df = df.sort_values('_sort_date', na_position='last')
+
     df_dedup = df.drop_duplicates(subset=['SPECIEID', '_normalized_ref'], keep='first')
 
-    df_dedup = df_dedup.drop(columns=['_compare_ref', '_normalized_ref'])
+    df_dedup = df_dedup.drop(columns=['_compare_ref', '_normalized_ref', '_app_date', '_grant_date', '_sort_date'])
 
     return df_dedup
