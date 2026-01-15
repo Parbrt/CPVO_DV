@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def main():
-    dataset = pd.read_csv('data/dataset_old.csv')
+    dataset = pd.read_csv('data/dataset.csv')
     print(f"Total Donnée: {len(dataset)}")
 
     dataset['FINAL_APPLICANT'] = dataset['APPLICANTNAME'].fillna(
