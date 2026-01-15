@@ -787,7 +787,7 @@ else:
         # Calcul des tendances pour les secteurs
         target_type = "Plant Breeders Rights" if is_pbr_part2 else "National Listing"
         trends_sect, start_yr_sect = get_volume_trend(df_filtered, 'Sector', year_range[1], year_range[0], target_type)
-        tooltip_sect = f"Indique si le secteur a augmenté ou diminué en volume de dépôts entre {start_yr_sect} et {year_range[1]}."
+        tooltip_sect = f"Les flèches indiquent si le secteur a augmenté ou diminué en volume de dépôts entre {start_yr_sect} et {year_range[1]}."
 
         with subcol1:
             st.markdown(header_with_info(3, "Répartition par secteur", "Tendances secteurs", tooltip_sect),
@@ -844,7 +844,7 @@ else:
         target_type_comp = "Plant Breeders Rights" if is_pbr_part3 else "National Listing"
         trends_comp, start_yr_comp = get_volume_trend(df_filtered, 'CompanyGroup', year_range[1], year_range[0],
                                                       target_type_comp)
-        tooltip_comp = f"Évolution du volume de dépôts de l'entreprise entre {start_yr_comp} et {year_range[1]}."
+        tooltip_comp = f"Les flèches indiquent l'évolution du volume de dépôts de l'entreprise entre {start_yr_comp} et {year_range[1]}."
 
         st.markdown(header_with_info(3, "Top entreprises", "Tendances entreprises", tooltip_comp),
                     unsafe_allow_html=True)
@@ -879,7 +879,7 @@ else:
         st.metric("Concentration Top 10", f"{concentration:.1f}%")
 
     st.markdown(header_with_info(2, "4. Évolution des proportions PBR (Europe)/NLI", "Proportions PBR/NLI",
-                                 "Ce graphique montre l évolution du pourcentage de variétés protégées par des droits d obtention végétale européens (PBR) par rapport aux inscriptions nationales (NLI). Une augmentation indique une tendance vers plus de protection intellectuelle au niveau européen. La ligne à 50% représente l équilibre entre les deux types."),
+                                 "Ce graphique montre l'évolution du pourcentage de variétés protégées par des droits d'obtention végétale européens (PBR) parmis les inscriptions nationales (NLI). Une augmentation indique une tendance vers plus de protection intellectuelle au niveau européen. La ligne à 50% représente l équilibre entre les deux types."),
                 unsafe_allow_html=True)
 
     # Count all NLI and PBR per year for the bars
@@ -952,7 +952,7 @@ else:
     st.markdown(header_with_info(3,
                                  "Evolution des proportions de variété protégées (PBR) parmis les variétés listés (NLI) pour les 10 principales entreprises",
                                  "Stratégie par entreprise",
-                                 "Ce graphique compare les stratégies de protection des 10 principales entreprises au fil du temps. Chaque ligne représente le pourcentage de PBR d une entreprise, permettant d identifier les différences de stratégies de protection intellectuelle entre les acteurs du marché."),
+                                 "Ce graphique compare les stratégies de protection des 10 principales entreprises au fil du temps. Chaque ligne représente le pourcentage de PBR d une entreprise parmis les variétés listées (NLI), permettant d identifier les différences de stratégies de protection intellectuelle entre les acteurs du marché."),
                 unsafe_allow_html=True)
 
     top_10_companies = df_filtered['CompanyGroup'].value_counts().head(10).index.tolist()
