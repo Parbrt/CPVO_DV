@@ -247,8 +247,11 @@ def header_with_info(level, title, info_title, info_desc):
 # --- CHARGEMENT DES DONNÉES ---
 
 @st.cache_data
-def load_data():
-    df = pd.read_csv('data/dataset_cleaned.csv')
+def load_data(file_content=None):
+    if file_content is not None:
+        df = pd.read_csv(BytesIO(file_content))
+    else:
+        df = pd.read_csv('data/dataset_cleaned.csv')
     print(len(df))
 
     # Define the mapping for GROUPVARIETAL
@@ -265,16 +268,12 @@ def load_data():
     df = df[~((df['COUNTRYID'] == 'QZ') & (df['PublicationType'] == 'National Listing'))]
     df = deduplicate_within_species(df)
 
-    # Date Handling - strip whitespace before parsing
-    df['APPLICATIONDATE'] = df['APPLICATIONDATE'].str.strip()
-    df['APPLICATIONDATE'] = pd.to_datetime(df['APPLICATIONDATE'], format='%d/%m/%Y', errors='coerce')
+    # Date Handling - use APPLICATIONDATE, fallback to GRANTDATE if null
+    app_date = pd.to_datetime(df['APPLICATIONDATE'].astype(str).str.strip(), format='%d/%m/%Y', errors='coerce')
+    grant_date = pd.to_datetime(df['GRANTDATE'].astype(str).str.strip(), format='%d/%m/%Y', errors='coerce')
+    df['ParsedDate'] = app_date.combine_first(grant_date)
 
-    # Fallback to GRANTDATE if APPLICATIONDATE is null
-    df['GRANTDATE'] = df['GRANTDATE'].str.strip()
-    df['GRANTDATE'] = pd.to_datetime(df['GRANTDATE'], format='%d/%m/%Y', errors='coerce')
-    df['APPLICATIONDATE'] = df['APPLICATIONDATE'].fillna(df['GRANTDATE'])
-
-    df['Year'] = df['APPLICATIONDATE'].dt.year
+    df['Year'] = df['ParsedDate'].dt.year
     df = df.dropna(subset=['Year'])
 
     df['Year'] = df['Year'].astype(int)
@@ -291,11 +290,31 @@ def load_data():
     df['SpecieGroup'] = df['SPECIEID'].apply(lambda x: get_specie_group(x, all_species_list))
     df['SpecieGroupShort'] = df['SpecieGroup'].apply(lambda x: x[:9] if isinstance(x, str) and len(x) > 9 else x)
     df['CompanyGroup'] = df['FINAL_APPLICANT'].apply(get_company_group)
+    mask = app_date.isna() & grant_date.isna()
+    print(df.loc[mask, ['APPLICATIONDATE', 'GRANTDATE']].head(20))
+    print(
+        f"Valid app_date: {app_date.notna().sum()}, Valid grant_date: {grant_date.notna().sum()}, Combined: {df['ParsedDate'].notna().sum()}")
 
     return df
 
 
-df = load_data()
+# --- FILE UPLOADER ---
+
+st.sidebar.header("Source des données")
+uploaded_file = st.sidebar.file_uploader(
+    "Glissez-déposez un fichier CSV",
+    type=['csv'],
+    help="Téléchargez un fichier CSV personnalisé ou utilisez le fichier par défaut (data/dataset_cleaned.csv)"
+)
+
+if uploaded_file is not None:
+    st.sidebar.success(f"Fichier chargé: {uploaded_file.name}")
+    # Read file content for caching purposes
+    file_content = uploaded_file.getvalue()
+    df = load_data(file_content)
+else:
+    st.sidebar.info("Fichier par défaut: dataset_cleaned.csv")
+    df = load_data(None)
 
 # --- SIDEBAR FILTRES ---
 

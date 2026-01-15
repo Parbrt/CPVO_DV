@@ -13,8 +13,10 @@ def main():
         )
     )
 
+    print(f"df size: {len(dataset)}")
     total_rows = len(dataset)
     unique_variety_ids = dataset['VARIETYID'].nunique()
+    print(f"unique deno id : {dataset['DENOMINATIONID'].nunique()}")
     duplicate_rows = total_rows - unique_variety_ids
     duplicate_percentage = (duplicate_rows / total_rows) * 100
 
