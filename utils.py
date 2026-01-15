@@ -77,7 +77,7 @@ def deduplicate_within_species(df):
     # Sort by date (earliest first) to keep earliest when deduplicating
     df = df.sort_values('_sort_date', na_position='last')
 
-    df_dedup = df.drop_duplicates(subset=['SPECIEID', '_normalized_ref'], keep='first')
+    df_dedup = df.drop_duplicates(subset=['SPECIEID', '_normalized_ref', 'PublicationType'], keep='first')
 
     df_dedup = df_dedup.drop(columns=['_compare_ref', '_normalized_ref', '_app_date', '_grant_date', '_sort_date'])
 

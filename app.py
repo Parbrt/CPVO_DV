@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -12,7 +14,7 @@ import re
 import unicodedata
 
 # Configuration du client API
-client = genai.Client(api_key='VOTRE_CLE_API')
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 
 # --- FONCTIONS UTILITAIRES ---
@@ -1144,13 +1146,51 @@ if st.sidebar.button("Résumer avec l'IA", type="secondary"):
             csv_text = csv_data.to_string()
 
             # Prepare the prompt
-            prompt = f"""Vous êtes un expert en Propriété Intellectuelle végétale. Votre mission est de croiser les variations statistiques du dashboard avec la documentation de référence (OCDE, FAO, UPOV...), le contexte politique ainsi que la conjoncture économique, afin de justifier les tendances issues des données.
+            prompt = f"""
+Rôle :
+Vous êtes un expert senior en propriété intellectuelle végétale et analyse stratégique. Votre expertise combine le droit des obtentions végétales (système UPOV/COV), la data science et l'économie agricole mondiale. Vous travaillez en étroite collaboration avec l'OCVV, la commission européenne, l’UPOV et les offices d’examen des états membres de l’union européenne.
 
-Voici les données à analyser:
+Objectif :
+Produire une note de synthèse stratégique (Executive Briefing) de deux pages. L'enjeu est de transformer les données brutes du dashboard en renseignements exploitables en les corrélant ensuite aux cadres réglementaires (OCVV, commission européenne, UPOV) et aux réalités de terrain (entreprises de sélection végétale, OCDE, FAO).
+
+Données d'entrée :
+Données brutes permettant la réalisation du dashboard.
+Documents de contexte : Références tels que des rapports annuels, traités et notes conjoncturelles.
+
+Méthodologie d'analyse & seuil de criticité :
+Analyser systématiquement le "Trend 3 ans" vs la "Moyenne Historique".
+Toute variation (hausse ou baisse) supérieure ou égale à 5% est considérée comme étant significative. Si possible, cette dernière doit être expliquée et justifiée par un facteur externe (réglementaire, climatique ou économique).
+ 
+Structure de la réponse :
+"1. Résumé global
+Diagnostic de la dynamique globale (croissance/stagnation/baisse ?). 
+Analyse du ratio stratégique : Ratio PBR (Protection COV) vs NLI (Inscription catalogue). 
+Interprétation type: Une baisse du ratio PBR indique-t-elle des changements de stratégie de protection intellectuelle pour les entreprises ? Une baisse du NLI indique-t-elle l’existence de nouvelles contraintes pour les entreprises ? 
+
+Analyse segmentée & ruptures de tendances
+
+Dynamique Sectorielle : Focus sur les secteurs Agri, Forest, Orna, Vege, Fruit. Identifier l’existence d’une évolution de la répartition des demandes en fonction des secteurs. 
+Évolution des espèces : Identifier l’existence de la répartition des demandes en fonction des espèces. Signaler tout changement de comportement.
+Analyse de la concentration du marché  : déterminer l’évolution du nombre d’entreprises qui représentent 50% du marché.
+
+Diagnostic visuel
+
+Interprétation analytique des graphiques et visuels du dashboard.
+
+Justification sur la base de sources documentaires
+
+Justifier les variations notables en citant les sources documentaires fournies (rapports annuels, traités, notes conjoncturelles). En cas d'usage de données externes (FAO, OCDE, Eurostat), la source doit être explicitement mentionnée."
+
+Contraintes :
+•    Langue : Français uniquement.
+•    Ton : Institutionnel, analytique et factuel.
+•    Format : markdown
+•    Livrable : Une note structurée permettant au management de l'OCVV de prendre des décisions d'orientation budgétaire ou technique.
+•    Source : Sources documentaires fournies. Dans le cas ou vous feriez référence à une source de données externe, précisez la source.
 
 {csv_text}
+"""
 
-Fournissez une analyse détaillée en français."""
 
             st.write("Envoi à l'IA...")
 
