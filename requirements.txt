@@ -3,3 +3,4 @@ streamlit
 plotly
 fpdf2
 kaleido
+google-genai

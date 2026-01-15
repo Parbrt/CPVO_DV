@@ -1,0 +1,101 @@
+﻿VARIETYID,COUNTRYID,PublicationType,APPLICATIONNUMBER,BREEDERREFERENCE,SPECIEID,SPECIENAME,SPECIENAMEEN,AGRI,FOREST,FRUIT,MISC,ORNA,VEGE,APPLICATIONDATE,GRANTDATE,APPLICANTNAME,BREEDERNAME,TITLEHOLDER,MAINTAINER,DENOMINATION
+1001,FR,Grant,2023-0001,LG-W-01,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/10/23,2/15/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Altesse
+1002,FR,Grant,2023-0002,LG-W-02,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/11/23,2/16/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Auriga
+1003,FR,Grant,2023-0003,LG-W-03,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/12/23,2/17/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Zenith
+1004,FR,Grant,2023-0004,LG-W-04,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/13/23,2/18/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Armada
+1005,FR,Grant,2023-0005,LG-W-05,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/14/23,2/19/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Apollo
+1006,FR,Grant,2023-0006,LG-M-01,S02,Zea mays,Maize,1,0,0,0,0,0,2/1/23,3/5/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Astari
+1007,FR,Grant,2023-0007,LG-M-02,S02,Zea mays,Maize,1,0,0,0,0,0,2/2/23,3/6/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Zebra
+1008,FR,Grant,2023-0008,LG-M-03,S02,Zea mays,Maize,1,0,0,0,0,0,2/3/23,3/7/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Meteor
+1009,FR,Grant,2023-0009,LG-M-04,S02,Zea mays,Maize,1,0,0,0,0,0,2/4/23,3/8/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Titan
+1010,FR,Grant,2023-0010,LG-M-05,S02,Zea mays,Maize,1,0,0,0,0,0,2/5/23,3/9/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Nova
+1011,FR,Grant,2023-0011,LG-B-01,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/1/23,4/10/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Calypso
+1012,FR,Grant,2023-0012,LG-B-02,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/2/23,4/11/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Maltix
+1013,FR,Grant,2023-0013,LG-B-03,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/3/23,4/12/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Pearl
+1014,FR,Grant,2023-0014,LG-B-04,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/4/23,4/13/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Amber
+1015,FR,Grant,2023-0015,LG-B-05,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/5/23,4/14/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Gold
+1016,FR,Grant,2023-0016,LG-S-01,S04,Helianthus annuus,Sunflower,1,0,0,0,0,0,4/10/23,5/20/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Sunny
+1017,FR,Grant,2023-0017,LG-S-02,S04,Helianthus annuus,Sunflower,1,0,0,0,0,0,4/11/23,5/21/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Helia
+1018,FR,Grant,2023-0018,LG-S-03,S04,Helianthus annuus,Sunflower,1,0,0,0,0,0,4/12/23,5/22/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Ray
+1019,FR,Grant,2023-0019,LG-S-04,S04,Helianthus annuus,Sunflower,1,0,0,0,0,0,4/13/23,5/23/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Bloom
+1020,FR,Grant,2023-0020,LG-S-05,S04,Helianthus annuus,Sunflower,1,0,0,0,0,0,4/14/23,5/24/24,Limagrain,Limagrain,Limagrain,Limagrain,LG Summer
+1021,DE,Grant,2023-0021,BC-W-01,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/20/23,2/28/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer-One
+1022,DE,Grant,2023-0022,BC-W-02,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/21/23,2/29/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer-Two
+1023,DE,Grant,2023-0023,BC-W-03,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/22/23,3/1/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer-Elite
+1024,DE,Grant,2023-0024,BC-W-04,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/23/23,3/2/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer-Grand
+1025,DE,Grant,2023-0025,BC-W-05,S01,Triticum aestivum,Wheat,1,0,0,0,0,0,1/24/23,3/3/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer-Plus
+1026,DE,Grant,2023-0026,BC-R-01,S09,Brassica napus,Rapeseed,1,0,0,0,0,0,5/1/23,6/10/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Hybrid Pro 1
+1027,DE,Grant,2023-0027,BC-R-02,S09,Brassica napus,Rapeseed,1,0,0,0,0,0,5/2/23,6/11/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Hybrid Pro 2
+1028,DE,Grant,2023-0028,BC-R-03,S09,Brassica napus,Rapeseed,1,0,0,0,0,0,5/3/23,6/12/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Hybrid Pro 3
+1029,DE,Grant,2023-0029,BC-R-04,S09,Brassica napus,Rapeseed,1,0,0,0,0,0,5/4/23,6/13/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Hybrid Pro 4
+1030,DE,Grant,2023-0030,BC-R-05,S09,Brassica napus,Rapeseed,1,0,0,0,0,0,5/5/23,6/14/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Hybrid Pro 5
+1031,DE,Grant,2023-0031,BC-B-01,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/15/23,4/20/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Baronesse V1
+1032,DE,Grant,2023-0032,BC-B-02,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/16/23,4/21/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Baronesse V2
+1033,DE,Grant,2023-0033,BC-B-03,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/17/23,4/22/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Baronesse V3
+1034,DE,Grant,2023-0034,BC-B-04,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/18/23,4/23/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Baronesse V4
+1035,DE,Grant,2023-0035,BC-B-05,S03,Hordeum vulgare,Barley,1,0,0,0,0,0,3/19/23,4/24/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Baronesse V5
+1036,DE,Grant,2023-0036,BC-M-01,S02,Zea mays,Maize,1,0,0,0,0,0,2/15/23,3/20/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Maize-Star 1
+1037,DE,Grant,2023-0037,BC-M-02,S02,Zea mays,Maize,1,0,0,0,0,0,2/16/23,3/21/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Maize-Star 2
+1038,DE,Grant,2023-0038,BC-M-03,S02,Zea mays,Maize,1,0,0,0,0,0,2/17/23,3/22/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Maize-Star 3
+1039,DE,Grant,2023-0039,BC-M-04,S02,Zea mays,Maize,1,0,0,0,0,0,2/18/23,3/23/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Maize-Star 4
+1040,DE,Grant,2023-0040,BC-M-05,S02,Zea mays,Maize,1,0,0,0,0,0,2/19/23,3/24/24,Bayer CropScience,Bayer CropScience,Bayer CropScience,Bayer CropScience,Maize-Star 5
+1041,US,Grant,2023-0041,SY-T-01,S07,Solanum lycopersicum,Tomato,0,0,0,0,0,1,1/5/23,2/10/24,Syngenta,Syngenta,Syngenta,Syngenta,Sweet Crimson 1
+1042,US,Grant,2023-0042,SY-T-02,S07,Solanum lycopersicum,Tomato,0,0,0,0,0,1,1/6/23,2/11/24,Syngenta,Syngenta,Syngenta,Syngenta,Sweet Crimson 2
+1043,US,Grant,2023-0043,SY-T-03,S07,Solanum lycopersicum,Tomato,0,0,0,0,0,1,1/7/23,2/12/24,Syngenta,Syngenta,Syngenta,Syngenta,Sweet Crimson 3
+1044,US,Grant,2023-0044,SY-T-04,S07,Solanum lycopersicum,Tomato,0,0,0,0,0,1,1/8/23,2/13/24,Syngenta,Syngenta,Syngenta,Syngenta,Sweet Crimson 4
+1045,US,Grant,2023-0045,SY-T-05,S07,Solanum lycopersicum,Tomato,0,0,0,0,0,1,1/9/23,2/14/24,Syngenta,Syngenta,Syngenta,Syngenta,Sweet Crimson 5
+1046,US,Grant,2023-0046,SY-P-01,S08,Capsicum annuum,Pepper,0,0,0,0,0,1,3/10/23,4/15/24,Syngenta,Syngenta,Syngenta,Syngenta,Bell Star 1
+1047,US,Grant,2023-0047,SY-P-02,S08,Capsicum annuum,Pepper,0,0,0,0,0,1,3/11/23,4/16/24,Syngenta,Syngenta,Syngenta,Syngenta,Bell Star 2
+1048,US,Grant,2023-0048,SY-P-03,S08,Capsicum annuum,Pepper,0,0,0,0,0,1,3/12/23,4/17/24,Syngenta,Syngenta,Syngenta,Syngenta,Bell Star 3
+1049,US,Grant,2023-0049,SY-P-04,S08,Capsicum annuum,Pepper,0,0,0,0,0,1,3/13/23,4/18/24,Syngenta,Syngenta,Syngenta,Syngenta,Bell Star 4
+1050,US,Grant,2023-0050,SY-P-05,S08,Capsicum annuum,Pepper,0,0,0,0,0,1,3/14/23,4/19/24,Syngenta,Syngenta,Syngenta,Syngenta,Bell Star 5
+1051,US,Grant,2023-0051,SY-M-01,S13,Cucumis melo,Melon,0,0,0,0,0,1,5/20/23,7/1/24,Syngenta,Syngenta,Syngenta,Syngenta,Melon-X1
+1052,US,Grant,2023-0052,SY-M-02,S13,Cucumis melo,Melon,0,0,0,0,0,1,5/21/23,7/2/24,Syngenta,Syngenta,Syngenta,Syngenta,Melon-X2
+1053,US,Grant,2023-0053,SY-M-03,S13,Cucumis melo,Melon,0,0,0,0,0,1,5/22/23,7/3/24,Syngenta,Syngenta,Syngenta,Syngenta,Melon-X3
+1054,US,Grant,2023-0054,SY-M-04,S13,Cucumis melo,Melon,0,0,0,0,0,1,5/23/23,7/4/24,Syngenta,Syngenta,Syngenta,Syngenta,Melon-X4
+1055,US,Grant,2023-0055,SY-M-05,S13,Cucumis melo,Melon,0,0,0,0,0,1,5/24/23,7/5/24,Syngenta,Syngenta,Syngenta,Syngenta,Melon-X5
+1056,US,Grant,2023-0056,SY-W-01,S14,Citrullus lanatus,Watermelon,0,0,0,0,0,1,6/1/23,7/15/24,Syngenta,Syngenta,Syngenta,Syngenta,Water-Plus 1
+1057,US,Grant,2023-0057,SY-W-02,S14,Citrullus lanatus,Watermelon,0,0,0,0,0,1,6/2/23,7/16/24,Syngenta,Syngenta,Syngenta,Syngenta,Water-Plus 2
+1058,US,Grant,2023-0058,SY-W-03,S14,Citrullus lanatus,Watermelon,0,0,0,0,0,1,6/3/23,7/17/24,Syngenta,Syngenta,Syngenta,Syngenta,Water-Plus 3
+1059,US,Grant,2023-0059,SY-W-04,S14,Citrullus lanatus,Watermelon,0,0,0,0,0,1,6/4/23,7/18/24,Syngenta,Syngenta,Syngenta,Syngenta,Water-Plus 4
+1060,US,Grant,2023-0060,SY-W-05,S14,Citrullus lanatus,Watermelon,0,0,0,0,0,1,6/5/23,7/19/24,Syngenta,Syngenta,Syngenta,Syngenta,Water-Plus 5
+1061,NL,Grant,2023-0061,DO-R-01,S05,Rosa L.,Rose,0,0,0,0,1,0,2/14/23,3/20/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Red Velvet 1
+1062,NL,Grant,2023-0062,DO-R-02,S05,Rosa L.,Rose,0,0,0,0,1,0,2/15/23,3/21/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Red Velvet 2
+1063,NL,Grant,2023-0063,DO-R-03,S05,Rosa L.,Rose,0,0,0,0,1,0,2/16/23,3/22/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Red Velvet 3
+1064,NL,Grant,2023-0064,DO-R-04,S05,Rosa L.,Rose,0,0,0,0,1,0,2/17/23,3/23/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Red Velvet 4
+1065,NL,Grant,2023-0065,DO-R-05,S05,Rosa L.,Rose,0,0,0,0,1,0,2/18/23,3/24/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Red Velvet 5
+1066,NL,Grant,2023-0066,DO-T-01,S06,Tulipa L.,Tulip,0,0,0,0,1,0,3/1/23,4/5/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Golden Sun 1
+1067,NL,Grant,2023-0067,DO-T-02,S06,Tulipa L.,Tulip,0,0,0,0,1,0,3/2/23,4/6/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Golden Sun 2
+1068,NL,Grant,2023-0068,DO-T-03,S06,Tulipa L.,Tulip,0,0,0,0,1,0,3/3/23,4/7/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Golden Sun 3
+1069,NL,Grant,2023-0069,DO-T-04,S06,Tulipa L.,Tulip,0,0,0,0,1,0,3/4/23,4/8/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Golden Sun 4
+1070,NL,Grant,2023-0070,DO-T-05,S06,Tulipa L.,Tulip,0,0,0,0,1,0,3/5/23,4/9/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Golden Sun 5
+1071,NL,Grant,2023-0071,DO-C-01,S15,Chrysanthemum,Chrysanthemum,0,0,0,0,1,0,4/10/23,5/15/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Bronze Star 1
+1072,NL,Grant,2023-0072,DO-C-02,S15,Chrysanthemum,Chrysanthemum,0,0,0,0,1,0,4/11/23,5/16/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Bronze Star 2
+1073,NL,Grant,2023-0073,DO-C-03,S15,Chrysanthemum,Chrysanthemum,0,0,0,0,1,0,4/12/23,5/17/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Bronze Star 3
+1074,NL,Grant,2023-0074,DO-C-04,S15,Chrysanthemum,Chrysanthemum,0,0,0,0,1,0,4/13/23,5/18/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Bronze Star 4
+1075,NL,Grant,2023-0075,DO-C-05,S15,Chrysanthemum,Chrysanthemum,0,0,0,0,1,0,4/14/23,5/19/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,Bronze Star 5
+1076,NL,Grant,2023-0076,DO-L-01,S16,Lilium L.,Lily,0,0,0,0,1,0,5/1/23,6/5/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,White Queen 1
+1077,NL,Grant,2023-0077,DO-L-02,S16,Lilium L.,Lily,0,0,0,0,1,0,5/2/23,6/6/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,White Queen 2
+1078,NL,Grant,2023-0078,DO-L-03,S16,Lilium L.,Lily,0,0,0,0,1,0,5/3/23,6/7/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,White Queen 3
+1079,NL,Grant,2023-0079,DO-L-04,S16,Lilium L.,Lily,0,0,0,0,1,0,5/4/23,6/8/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,White Queen 4
+1080,NL,Grant,2023-0080,DO-L-05,S16,Lilium L.,Lily,0,0,0,0,1,0,5/5/23,6/9/24,Dummen Orange,Dummen Orange,Dummen Orange,Dummen Orange,White Queen 5
+1081,ES,Grant,2023-0081,DR-S-01,S10,Fragaria x ananassa,Strawberry,0,0,1,0,0,0,1/15/23,2/20/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Rosy 1
+1082,ES,Grant,2023-0082,DR-S-02,S10,Fragaria x ananassa,Strawberry,0,0,1,0,0,0,1/16/23,2/21/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Rosy 2
+1083,ES,Grant,2023-0083,DR-S-03,S10,Fragaria x ananassa,Strawberry,0,0,1,0,0,0,1/17/23,2/22/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Rosy 3
+1084,ES,Grant,2023-0084,DR-S-04,S10,Fragaria x ananassa,Strawberry,0,0,1,0,0,0,1/18/23,2/23/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Rosy 4
+1085,ES,Grant,2023-0085,DR-S-05,S10,Fragaria x ananassa,Strawberry,0,0,1,0,0,0,1/19/23,2/24/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Rosy 5
+1086,ES,Grant,2023-0086,DR-R-01,S11,Rubus idaeus,Raspberry,0,0,1,0,0,0,2/10/23,3/15/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Ruby 1
+1087,ES,Grant,2023-0087,DR-R-02,S11,Rubus idaeus,Raspberry,0,0,1,0,0,0,2/11/23,3/16/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Ruby 2
+1088,ES,Grant,2023-0088,DR-R-03,S11,Rubus idaeus,Raspberry,0,0,1,0,0,0,2/12/23,3/17/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Ruby 3
+1089,ES,Grant,2023-0089,DR-R-04,S11,Rubus idaeus,Raspberry,0,0,1,0,0,0,2/13/23,3/18/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Ruby 4
+1090,ES,Grant,2023-0090,DR-R-05,S11,Rubus idaeus,Raspberry,0,0,1,0,0,0,2/14/23,3/19/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Ruby 5
+1091,ES,Grant,2023-0091,DR-B-01,S12,Vaccinium corymbosum,Blueberry,0,0,1,0,0,0,3/20/23,4/25/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Midnight 1
+1092,ES,Grant,2023-0092,DR-B-02,S12,Vaccinium corymbosum,Blueberry,0,0,1,0,0,0,3/21/23,4/26/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Midnight 2
+1093,ES,Grant,2023-0093,DR-B-03,S12,Vaccinium corymbosum,Blueberry,0,0,1,0,0,0,3/22/23,4/27/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Midnight 3
+1094,ES,Grant,2023-0094,DR-B-04,S12,Vaccinium corymbosum,Blueberry,0,0,1,0,0,0,3/23/23,4/28/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Midnight 4
+1095,ES,Grant,2023-0095,DR-B-05,S12,Vaccinium corymbosum,Blueberry,0,0,1,0,0,0,3/24/23,4/29/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Midnight 5
+1096,ES,Grant,2023-0096,DR-BK-01,S17,Rubus fruticosus,Blackberry,0,0,1,0,0,0,4/1/23,5/10/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Black 1
+1097,ES,Grant,2023-0097,DR-BK-02,S17,Rubus fruticosus,Blackberry,0,0,1,0,0,0,4/2/23,5/11/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Black 2
+1098,ES,Grant,2023-0098,DR-BK-03,S17,Rubus fruticosus,Blackberry,0,0,1,0,0,0,4/3/23,5/12/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Black 3
+1099,ES,Grant,2023-0099,DR-BK-04,S17,Rubus fruticosus,Blackberry,0,0,1,0,0,0,4/4/23,5/13/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Black 4
+1100,ES,Grant,2023-0100,DR-BK-05,S17,Rubus fruticosus,Blackberry,0,0,1,0,0,0,4/5/23,5/14/24,Driscoll's,Driscoll's,Driscoll's,Driscoll's,Black 5

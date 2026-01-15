@@ -7,6 +7,9 @@ from utils import get_sector, get_specie_group, get_company_group, deduplicate_w
 from fpdf import FPDF
 from io import BytesIO
 from datetime import datetime
+from google import genai
+
+client = genai.Client(api_key='AIzaSyCF3kGE1ASH8Z0Dr-lS_E4-TStHDJXJUMM')
 
 st.set_page_config(page_title="Tableau de bord CPVO", layout="wide")
 
@@ -585,6 +588,72 @@ st.markdown("---")
 st.markdown("*Tableau de bord basé sur les données CPVO*")
 
 # PDF Export in sidebar
+st.sidebar.markdown("---")
+st.sidebar.subheader("Analyse IA")
+if st.sidebar.button("Résumer avec l'IA", type="secondary"):
+    try:
+        with st.sidebar.status("Génération de l'analyse IA...", expanded=True) as status:
+            st.write("Chargement des données...")
+
+            # Read the CSV data
+            csv_data = pd.read_csv('data/fake_data.csv')
+            csv_text = csv_data.to_string()
+
+            # Prepare the prompt
+            prompt = f"""Vous êtes un expert en Propriété Intellectuelle végétale. Votre mission est de croiser les variations statistiques du dashboard avec la documentation de référence (OCDE, FAO, UPOV...), le contexte politique ainsi que la conjoncture économique, afin de justifier les tendances issues des données.
+
+Voici les données à analyser:
+
+{csv_text}
+
+Fournissez une analyse détaillée en français."""
+
+            st.write("Envoi à l'IA...")
+
+            # Call Gemini API
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt
+            )
+
+            ai_analysis = response.text
+
+            st.write("Génération du PDF...")
+
+            # Generate PDF with AI analysis
+            pdf_ai = FPDF()
+            pdf_ai.set_auto_page_break(auto=True, margin=15)
+            pdf_ai.add_page()
+
+            # Title
+            pdf_ai.set_font('Helvetica', 'B', 18)
+            pdf_ai.cell(0, 15, 'Analyse IA - CPVO', ln=True, align='C')
+            pdf_ai.set_font('Helvetica', '', 10)
+            pdf_ai.cell(0, 8, f'Date: {datetime.now().strftime("%d/%m/%Y %H:%M")}', ln=True, align='C')
+            pdf_ai.cell(0, 10, '', ln=True)
+
+            # Content
+            pdf_ai.set_font('Helvetica', '', 11)
+
+            # Handle text encoding and split into lines
+            clean_text = ai_analysis.encode('latin-1', 'replace').decode('latin-1')
+            pdf_ai.multi_cell(0, 6, clean_text)
+
+            pdf_ai_bytes = bytes(pdf_ai.output())
+
+            status.update(label="Analyse terminée!", state="complete")
+
+        st.sidebar.download_button(
+            label="Télécharger l'analyse IA",
+            data=pdf_ai_bytes,
+            file_name=f"analyse_ia_cpvo_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            mime="application/pdf"
+        )
+        st.sidebar.success("Analyse générée avec succès!")
+
+    except Exception as e:
+        st.sidebar.error(f"Erreur: {str(e)}")
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("Export PDF")
 if st.sidebar.button("Generer le rapport PDF", type="primary"):
