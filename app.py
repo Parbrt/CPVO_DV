@@ -12,8 +12,9 @@ st.set_page_config(page_title="Tableau de bord CPVO", layout="wide")
 
 def generate_pdf(figures, metrics_data, year_range):
     pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_auto_page_break(auto=False)
 
+    # Title page
     pdf.add_page()
     pdf.set_font('Helvetica', 'B', 24)
     pdf.cell(0, 40, '', ln=True)
@@ -30,15 +31,26 @@ def generate_pdf(figures, metrics_data, year_range):
     for key, value in metrics_data.items():
         pdf.cell(0, 8, f'  - {key}: {value}', ln=True)
 
-    for title, fig in figures.items():
+    fig_list = list(figures.items())
+    for i in range(0, len(fig_list), 2):
         pdf.add_page()
-        pdf.set_font('Helvetica', 'B', 14)
-        pdf.cell(0, 10, title, ln=True, align='C')
-        pdf.cell(0, 5, '', ln=True)
 
-        img_bytes = fig.to_image(format="png", width=1000, height=500, scale=2)
-        img_stream = BytesIO(img_bytes)
-        pdf.image(img_stream, x=10, y=30, w=190)
+        title1, fig1 = fig_list[i]
+        pdf.set_font('Helvetica', 'B', 11)
+        pdf.set_xy(10, 10)
+        pdf.cell(190, 8, title1, ln=True, align='C')
+        img_bytes1 = fig1.to_image(format="png", width=900, height=400, scale=2)
+        img_stream1 = BytesIO(img_bytes1)
+        pdf.image(img_stream1, x=10, y=20, w=190)
+
+        if i + 1 < len(fig_list):
+            title2, fig2 = fig_list[i + 1]
+            pdf.set_font('Helvetica', 'B', 11)
+            pdf.set_xy(10, 145)
+            pdf.cell(190, 8, title2, ln=True, align='C')
+            img_bytes2 = fig2.to_image(format="png", width=900, height=400, scale=2)
+            img_stream2 = BytesIO(img_bytes2)
+            pdf.image(img_stream2, x=10, y=155, w=190)
 
     return bytes(pdf.output())
 
@@ -124,7 +136,6 @@ if selected_applicants:
 
 st.title("Tableau de bord des variétés végétales CPVO")
 
-# Initialize figures dictionary for PDF export
 pdf_figures = {}
 
 st.markdown("**Données CPVO** (National Listing de QZ exclus, dédupliquées par BREEDERREFERENCE/DENOMINATION au sein de chaque espèce)")
@@ -428,7 +439,9 @@ fig_strategy = px.line(
     color='CompanyGroup',
     title='Évolution de la stratégie PBR par entreprise (Top 10)',
     labels={'PBR_Percentage': '% Plant Breeders Rights', 'Year': 'Année', 'CompanyGroup': 'Entreprise'},
-    markers=True
+    markers=True,
+    color_discrete_sequence=px.colors.qualitative.Plotly,
+    template='plotly'
 )
 
 fig_strategy.update_layout(hovermode='x unified')
@@ -441,7 +454,6 @@ dimension = st.multiselect(
 )
 
 if dimension:
-    # Dictionary to store selections for each dimension
     all_selected_items = {}
 
     for dim in dimension:
@@ -507,8 +519,12 @@ if dimension:
 
         fig_detail = make_subplots(specs=[[{"secondary_y": True}]])
 
-        for item in selected_groups:
+        # Color palette for different groups
+        colors = px.colors.qualitative.Plotly
+
+        for idx, item in enumerate(selected_groups):
             df_item = df_counts[df_counts['GroupKey'] == item]
+            color = colors[idx % len(colors)]
 
             # NLI curve
             fig_detail.add_trace(
@@ -517,8 +533,8 @@ if dimension:
                     y=df_item['NLI_Count'],
                     name=f'{item} (NLI)',
                     mode='lines+markers',
-                    line=dict(width=2),
-                    marker=dict(size=8)
+                    line=dict(width=2, color=color),
+                    marker=dict(size=8, color=color)
                 ),
                 secondary_y=False
             )
@@ -530,8 +546,8 @@ if dimension:
                     y=df_item['PBR_Count'],
                     name=f'{item} (PBR)',
                     mode='lines+markers',
-                    line=dict(width=2, dash='dash'),
-                    marker=dict(size=8)
+                    line=dict(width=2, dash='dash', color=color),
+                    marker=dict(size=8, color=color, symbol='square')
                 ),
                 secondary_y=False
             )
@@ -543,8 +559,8 @@ if dimension:
                     y=df_item['Ratio'],
                     name=f'{item} (Ratio PBR/NLI)',
                     mode='lines+markers',
-                    line=dict(width=2, dash='dot'),
-                    marker=dict(size=6, symbol='diamond'),
+                    line=dict(width=2, dash='dot', color=color),
+                    marker=dict(size=6, symbol='diamond', color=color),
                     opacity=0.7
                 ),
                 secondary_y=True
@@ -554,7 +570,8 @@ if dimension:
         fig_detail.update_layout(
             title=f'Évolution NLI, PBR et Ratio par {dimension_label}',
             hovermode='x unified',
-            legend_title=dimension_label
+            legend_title=dimension_label,
+            template='plotly'
         )
 
         fig_detail.update_xaxes(title_text='Année')
