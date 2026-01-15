@@ -90,6 +90,61 @@ def generate_pdf(figures, metrics_data, year_range):
     return bytes(pdf.output())
 
 
+def render_markdown_to_pdf(pdf, markdown_text):
+    """Render markdown text to PDF."""
+    def clean_text(text):
+        return text.encode('latin-1', 'replace').decode('latin-1')
+
+    pdf.set_left_margin(15)
+    pdf.set_right_margin(15)
+    pdf.set_x(15)
+
+    lines = markdown_text.split('\n')
+
+    for line in lines:
+        stripped = line.strip()
+
+        if not stripped:
+            pdf.ln(4)
+            continue
+
+        if stripped.startswith('### '):
+            pdf.set_font('Helvetica', 'B', 12)
+            pdf.multi_cell(180, 7, clean_text(stripped[4:]))
+            pdf.ln(2)
+        elif stripped.startswith('#### '):
+            pdf.set_font('Helvetica', 'B', 10)
+            pdf.multi_cell(180, 8, clean_text(stripped[5:]))
+            pdf.ln(1)
+        elif stripped.startswith('## '):
+            pdf.set_font('Helvetica', 'B', 14)
+            pdf.multi_cell(180, 8, clean_text(stripped[3:]))
+            pdf.ln(3)
+        elif stripped.startswith('# '):
+            pdf.set_font('Helvetica', 'B', 16)
+            pdf.multi_cell(180, 9, clean_text(stripped[2:]))
+            pdf.ln(4)
+        elif stripped.startswith('- ') or stripped.startswith('* '):
+            pdf.set_font('Helvetica', '', 11)
+            bullet_text = stripped[2:]
+            bullet_text = re.sub(r'\*\*(.+?)\*\*', r'\1', bullet_text)
+            pdf.set_x(20)
+            pdf.multi_cell(170, 6, clean_text('- ' + bullet_text))
+        elif re.match(r'^\d+\.\s', stripped):
+            pdf.set_font('Helvetica', '', 11)
+            list_text = re.sub(r'\*\*(.+?)\*\*', r'\1', stripped)
+            pdf.set_x(20)
+            pdf.multi_cell(170, 6, clean_text(list_text))
+        else:
+            pdf.set_font('Helvetica', '', 11)
+            clean_line = re.sub(r'\*\*(.+?)\*\*', r'\1', stripped)
+            clean_line = re.sub(r'\*(.+?)\*', r'\1', clean_line)
+            clean_line = re.sub(r'__(.+?)__', r'\1', clean_line)
+            clean_line = re.sub(r'_(.+?)_', r'\1', clean_line)
+            pdf.set_x(15)
+            pdf.multi_cell(180, 6, clean_text(clean_line))
+
+
 @st.dialog("Informations")
 def name_dialog(nomLatin, nomEn):
     st.markdown(f"**Nom Latin:** {nomLatin}")
@@ -194,6 +249,7 @@ def header_with_info(level, title, info_title, info_desc):
 @st.cache_data
 def load_data():
     df = pd.read_csv('data/dataset_cleaned.csv')
+    print(len(df))
 
     # Define the mapping for GROUPVARIETAL
     sector_mapping = {
@@ -212,6 +268,12 @@ def load_data():
     # Date Handling - strip whitespace before parsing
     df['APPLICATIONDATE'] = df['APPLICATIONDATE'].str.strip()
     df['APPLICATIONDATE'] = pd.to_datetime(df['APPLICATIONDATE'], format='%d/%m/%Y', errors='coerce')
+
+    # Fallback to GRANTDATE if APPLICATIONDATE is null
+    df['GRANTDATE'] = df['GRANTDATE'].str.strip()
+    df['GRANTDATE'] = pd.to_datetime(df['GRANTDATE'], format='%d/%m/%Y', errors='coerce')
+    df['APPLICATIONDATE'] = df['APPLICATIONDATE'].fillna(df['GRANTDATE'])
+
     df['Year'] = df['APPLICATIONDATE'].dt.year
     df = df.dropna(subset=['Year'])
 
