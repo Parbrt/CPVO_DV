@@ -14,7 +14,6 @@ def generate_pdf(figures, metrics_data, year_range):
     pdf = FPDF()
     pdf.set_auto_page_break(auto=False)
 
-    # Title page
     pdf.add_page()
     pdf.set_font('Helvetica', 'B', 24)
     pdf.cell(0, 40, '', ln=True)
@@ -65,9 +64,7 @@ def load_data():
 
     df = df[~((df['COUNTRYID'] == 'QZ') & (df['PublicationType'] == 'National Listing'))]
 
-    initial_count = len(df)
     df = deduplicate_within_species(df)
-    dedup_count = len(df)
 
     df['APPLICATIONDATE'] = pd.to_datetime(df['APPLICATIONDATE'], format='%d/%m/%Y', errors='coerce')
     df['Year'] = df['APPLICATIONDATE'].dt.year
@@ -125,7 +122,6 @@ df_filtered = df[
     (df['Sector'].isin(selected_sectors))
 ].copy()
 
-# Filtrer les NaN dans les colonnes critiques
 df_filtered = df_filtered.dropna(subset=['CompanyGroup', 'SpecieGroup'])
 
 if selected_species:
@@ -138,7 +134,7 @@ st.title("Tableau de bord des variétés végétales CPVO")
 
 pdf_figures = {}
 
-st.markdown("**Données CPVO** (National Listing de QZ exclus, dédupliquées par BREEDERREFERENCE/DENOMINATION au sein de chaque espèce)")
+st.markdown("**Données CPVO**")
 st.markdown(f"**{len(df_filtered)}** variétés affichées sur **{len(df)}** au total")
 
 st.header("1. Evolution temporel par type de demande")
@@ -592,23 +588,84 @@ st.markdown("*Tableau de bord basé sur les données CPVO*")
 st.sidebar.markdown("---")
 st.sidebar.subheader("Export PDF")
 if st.sidebar.button("Generer le rapport PDF", type="primary"):
-    with st.spinner("Generation du PDF en cours..."):
-        try:
-            metrics_data = {
-                "Varietes affichees": f"{len(df_filtered)} sur {len(df)}",
-                "Periode": f"{year_range[0]} - {year_range[1]}",
-                "Moyenne de depot NLI": f"{avg_nli:.0f}",
-                "Moyenne de depot PBR": f"{avg_pbr:.0f}",
-                "Taux de croissance NLI": f"{tc_nli_val:+.2f}%",
-                "Taux de croissance PBR": f"{tc_pbr_val:+.2f}%",
-            }
-            pdf_bytes = generate_pdf(pdf_figures, metrics_data, year_range)
-            st.sidebar.download_button(
-                label="Telecharger le PDF",
-                data=pdf_bytes,
-                file_name=f"rapport_cpvo_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                mime="application/pdf"
-            )
-            st.sidebar.success("PDF genere!")
-        except Exception as e:
-            st.sidebar.error(f"Erreur: {str(e)}")
+    try:
+        metrics_data = {
+            "Varietes affichees": f"{len(df_filtered)} sur {len(df)}",
+            "Periode": f"{year_range[0]} - {year_range[1]}",
+            "Moyenne de depot NLI": f"{avg_nli:.0f}",
+            "Moyenne de depot PBR": f"{avg_pbr:.0f}",
+            "Taux de croissance NLI": f"{tc_nli_val:+.2f}%",
+            "Taux de croissance PBR": f"{tc_pbr_val:+.2f}%",
+        }
+
+        # Progress indicator
+        progress_bar = st.sidebar.progress(0)
+        status_text = st.sidebar.empty()
+
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=False)
+
+        # Title page
+        status_text.text("Creation de la page de titre...")
+        progress_bar.progress(5)
+        pdf.add_page()
+        pdf.set_font('Helvetica', 'B', 24)
+        pdf.cell(0, 40, '', ln=True)
+        pdf.cell(0, 15, 'Tableau de bord CPVO', ln=True, align='C')
+        pdf.set_font('Helvetica', '', 14)
+        pdf.cell(0, 10, 'Rapport des varietes vegetales', ln=True, align='C')
+        pdf.cell(0, 10, f'Periode: {year_range[0]} - {year_range[1]}', ln=True, align='C')
+        pdf.cell(0, 10, f'Date: {datetime.now().strftime("%d/%m/%Y")}', ln=True, align='C')
+        pdf.cell(0, 20, '', ln=True)
+        pdf.set_font('Helvetica', 'B', 12)
+        pdf.cell(0, 10, 'Resume des indicateurs:', ln=True)
+        pdf.set_font('Helvetica', '', 11)
+        for key, value in metrics_data.items():
+            pdf.cell(0, 8, f'  - {key}: {value}', ln=True)
+
+        # Add figures with progress
+        fig_list = list(pdf_figures.items())
+        total_figs = len(fig_list)
+
+        for i in range(0, total_figs, 2):
+            progress_pct = int(10 + (i / total_figs) * 85)
+            title1, fig1 = fig_list[i]
+            status_text.text(f"Rendu: {title1}...")
+            progress_bar.progress(progress_pct)
+
+            pdf.add_page()
+            pdf.set_font('Helvetica', 'B', 11)
+            pdf.set_xy(10, 10)
+            pdf.cell(190, 8, title1, ln=True, align='C')
+            img_bytes1 = fig1.to_image(format="png", width=900, height=400, scale=2)
+            img_stream1 = BytesIO(img_bytes1)
+            pdf.image(img_stream1, x=10, y=20, w=190)
+
+            if i + 1 < total_figs:
+                title2, fig2 = fig_list[i + 1]
+                status_text.text(f"Rendu: {title2}...")
+                progress_bar.progress(progress_pct + 5)
+
+                pdf.set_font('Helvetica', 'B', 11)
+                pdf.set_xy(10, 145)
+                pdf.cell(190, 8, title2, ln=True, align='C')
+                img_bytes2 = fig2.to_image(format="png", width=900, height=400, scale=2)
+                img_stream2 = BytesIO(img_bytes2)
+                pdf.image(img_stream2, x=10, y=155, w=190)
+
+        status_text.text("Finalisation du PDF...")
+        progress_bar.progress(95)
+        pdf_bytes = bytes(pdf.output())
+
+        progress_bar.progress(100)
+        status_text.text("Termine!")
+
+        st.sidebar.download_button(
+            label="Telecharger le PDF",
+            data=pdf_bytes,
+            file_name=f"rapport_cpvo_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+            mime="application/pdf"
+        )
+        st.sidebar.success("PDF genere avec succes!")
+    except Exception as e:
+        st.sidebar.error(f"Erreur: {str(e)}")
