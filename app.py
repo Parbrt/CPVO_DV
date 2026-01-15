@@ -4,8 +4,43 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from utils import get_sector, get_specie_group, get_company_group, deduplicate_within_species
+from fpdf import FPDF
+from io import BytesIO
+from datetime import datetime
 
 st.set_page_config(page_title="Tableau de bord CPVO", layout="wide")
+
+def generate_pdf(figures, metrics_data, year_range):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.add_page()
+    pdf.set_font('Helvetica', 'B', 24)
+    pdf.cell(0, 40, '', ln=True)
+    pdf.cell(0, 15, 'Tableau de bord CPVO', ln=True, align='C')
+    pdf.set_font('Helvetica', '', 14)
+    pdf.cell(0, 10, f'Rapport des varietes vegetales', ln=True, align='C')
+    pdf.cell(0, 10, f'Periode: {year_range[0]} - {year_range[1]}', ln=True, align='C')
+    pdf.cell(0, 10, f'Date: {datetime.now().strftime("%d/%m/%Y")}', ln=True, align='C')
+
+    pdf.cell(0, 20, '', ln=True)
+    pdf.set_font('Helvetica', 'B', 12)
+    pdf.cell(0, 10, 'Resume des indicateurs:', ln=True)
+    pdf.set_font('Helvetica', '', 11)
+    for key, value in metrics_data.items():
+        pdf.cell(0, 8, f'  - {key}: {value}', ln=True)
+
+    for title, fig in figures.items():
+        pdf.add_page()
+        pdf.set_font('Helvetica', 'B', 14)
+        pdf.cell(0, 10, title, ln=True, align='C')
+        pdf.cell(0, 5, '', ln=True)
+
+        img_bytes = fig.to_image(format="png", width=1000, height=500, scale=2)
+        img_stream = BytesIO(img_bytes)
+        pdf.image(img_stream, x=10, y=30, w=190)
+
+    return bytes(pdf.output())
 
 @st.dialog("Informations")
 def name_dialog(nomLatin, nomEn):
@@ -88,6 +123,10 @@ if selected_applicants:
     df_filtered = df_filtered[df_filtered['CompanyGroup'].isin(selected_applicants)]
 
 st.title("Tableau de bord des variétés végétales CPVO")
+
+# Initialize figures dictionary for PDF export
+pdf_figures = {}
+
 st.markdown("**Données CPVO** (National Listing de QZ exclus, dédupliquées par BREEDERREFERENCE/DENOMINATION au sein de chaque espèce)")
 st.markdown(f"**{len(df_filtered)}** variétés affichées sur **{len(df)}** au total")
 
@@ -104,7 +143,7 @@ with col1:
         .loc[lambda df: df['PublicationType'] == 'National Listing']
     )
 
-    fig1 = px.area(
+    fig_nli = px.area(
         df_protection,
         x='Year',
         y='Count',
@@ -115,9 +154,10 @@ with col1:
             'National Listing': '#2E86AB'
         }
     )
-    fig1.update_layout(hovermode='x unified')
-    fig1.update_xaxes(dtick=2, tickangle=45)
-    st.plotly_chart(fig1, use_container_width=True)
+    fig_nli.update_layout(hovermode='x unified')
+    fig_nli.update_xaxes(dtick=2, tickangle=45)
+    st.plotly_chart(fig_nli, use_container_width=True)
+    pdf_figures['1. Evolution NLI'] = fig_nli
 
 with col2:
     df_protection = (
@@ -128,7 +168,7 @@ with col2:
         .loc[lambda df: df['PublicationType'] == 'Plant Breeders Rights']
     )
 
-    fig1 = px.area(
+    fig_pbr = px.area(
         df_protection,
         x='Year',
         y='Count',
@@ -139,9 +179,10 @@ with col2:
             'Plant Breeders Rights': '#E94F37'
         }
     )
-    fig1.update_layout(hovermode='x unified')
-    fig1.update_xaxes(dtick=2, tickangle=45)
-    st.plotly_chart(fig1, use_container_width=True)
+    fig_pbr.update_layout(hovermode='x unified')
+    fig_pbr.update_xaxes(dtick=2, tickangle=45)
+    st.plotly_chart(fig_pbr, use_container_width=True)
+    pdf_figures['2. Evolution PBR'] = fig_pbr
 
 
 count_nli_max_year = (
@@ -236,7 +277,7 @@ with col1:
 
     top_species['DisplayName'] = top_species['SPECIENAME'].apply(lambda x: x[:15] if isinstance(x, str) else x)
 
-    fig2 = px.bar(
+    fig_species = px.bar(
         top_species,
         y='DisplayName',
         x='Count',
@@ -246,9 +287,10 @@ with col1:
         color='Count',
         color_continuous_scale='Blues'
     )
-    fig2.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
+    fig_species.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
+    pdf_figures['3. Top 15 especes'] = fig_species
 
-    selected = st.plotly_chart(fig2, use_container_width=True, on_select="rerun", key="species_chart")
+    selected = st.plotly_chart(fig_species, use_container_width=True, on_select="rerun", key="species_chart")
 
     if selected and selected.selection and selected.selection.points:
         clicked_display_name = selected.selection.points[0]['y']
@@ -274,7 +316,7 @@ with col2:
     sector_counts.columns = ['Secteur', 'Count']
 
     if not is_camembert:
-        fig3 = px.bar(
+        fig_sectors = px.bar(
             sector_counts,
             y='Secteur',
             x='Count',
@@ -284,11 +326,13 @@ with col2:
             color='Count',
             color_continuous_scale='Greens'
         )
-        fig3.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
-        st.plotly_chart(fig3, use_container_width=True)
+        fig_sectors.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
+        st.plotly_chart(fig_sectors, use_container_width=True)
+        pdf_figures['4. Distribution par secteur'] = fig_sectors
     else:
-       data_fig4 = px.pie(sector_counts, values='Count', names='Secteur', title=f'Distribution par secteur ({("PBR" if is_pbr_part2 else "NLI")})')
-       st.plotly_chart(data_fig4, use_container_width=True)
+        fig_sectors_pie = px.pie(sector_counts, values='Count', names='Secteur', title=f'Distribution par secteur ({("PBR" if is_pbr_part2 else "NLI")})')
+        st.plotly_chart(fig_sectors_pie, use_container_width=True)
+        pdf_figures['4. Distribution par secteur'] = fig_sectors_pie
 
 st.header("3. Top entreprises")
 
@@ -302,7 +346,7 @@ with col1:
     top_companies = df_national['CompanyGroup'].value_counts().head(10).reset_index()
     top_companies.columns = ['Entreprise', 'Count']
 
-    fig4 = px.bar(
+    fig_companies = px.bar(
         top_companies,
         y='Entreprise',
         x='Count',
@@ -312,8 +356,9 @@ with col1:
         color='Count',
         color_continuous_scale='Reds'
     )
-    fig4.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
-    st.plotly_chart(fig4, use_container_width=True)
+    fig_companies.update_layout(yaxis={'categoryorder': 'total ascending'}, showlegend=False)
+    st.plotly_chart(fig_companies, use_container_width=True)
+    pdf_figures['5. Top entreprises'] = fig_companies
 
 with col2:
     st.subheader(f'Statistiques ({("PBR" if is_pbr_part3 else "NLI")})')
@@ -335,9 +380,9 @@ df_strategy_pivot['Total'] = df_strategy_pivot.sum(axis=1)
 df_strategy_pivot['PBR_Percentage'] = (df_strategy_pivot.get('Plant Breeders Rights', 0) / df_strategy_pivot['Total'] * 100).round(2)
 df_strategy_pivot = df_strategy_pivot.reset_index()
 
-fig5 = go.Figure()
+fig_pbr_pct = go.Figure()
 
-fig5.add_trace(go.Scatter(
+fig_pbr_pct.add_trace(go.Scatter(
     x=df_strategy_pivot['Year'],
     y=df_strategy_pivot['PBR_Percentage'],
     mode='lines+markers',
@@ -347,9 +392,9 @@ fig5.add_trace(go.Scatter(
     fill='tonexty'
 ))
 
-fig5.add_hline(y=50, line_dash="dash", line_color="gray", annotation_text="50%")
+fig_pbr_pct.add_hline(y=50, line_dash="dash", line_color="gray", annotation_text="50%")
 
-fig5.update_layout(
+fig_pbr_pct.update_layout(
     title='Evolution des proportions de variété protégées (PBR (Europe)) parmis les variétés listés (NLI)',
     xaxis_title='Année',
     yaxis_title='% Plant Breeders Rights',
@@ -357,7 +402,8 @@ fig5.update_layout(
     yaxis_range=[0, 100]
 )
 
-st.plotly_chart(fig5, use_container_width=True)
+st.plotly_chart(fig_pbr_pct, use_container_width=True)
+pdf_figures['6. Evolution proportions PBR/NLI'] = fig_pbr_pct
 
 st.subheader("Evolution des proportions de variété protégées (PBR (Europe)) parmis les variétés listés (NLI) pour les 10 principales entreprises")
 
@@ -375,7 +421,7 @@ df_company_pivot = df_company_strategy.pivot_table(
 df_company_pivot['Total'] = df_company_pivot.get('Plant Breeders Rights', 0) + df_company_pivot.get('National Listing', 0)
 df_company_pivot['PBR_Percentage'] = (df_company_pivot.get('Plant Breeders Rights', 0) / df_company_pivot['Total'] * 100).round(2)
 
-fig6 = px.line(
+fig_strategy = px.line(
     df_company_pivot,
     x='Year',
     y='PBR_Percentage',
@@ -385,8 +431,9 @@ fig6 = px.line(
     markers=True
 )
 
-fig6.update_layout(hovermode='x unified')
-st.plotly_chart(fig6, use_container_width=True)
+fig_strategy.update_layout(hovermode='x unified')
+st.plotly_chart(fig_strategy, use_container_width=True)
+pdf_figures['7. Strategie PBR par entreprise'] = fig_strategy
 dimension = st.multiselect(
     "Sélectionnez une ou plusieurs dimensions d'analyse:",
     options=['Entreprise', 'Secteur', 'Espèce'],
@@ -458,13 +505,13 @@ if dimension:
             axis=1
         ).round(2)
 
-        fig7 = make_subplots(specs=[[{"secondary_y": True}]])
+        fig_detail = make_subplots(specs=[[{"secondary_y": True}]])
 
         for item in selected_groups:
             df_item = df_counts[df_counts['GroupKey'] == item]
 
             # NLI curve
-            fig7.add_trace(
+            fig_detail.add_trace(
                 go.Scatter(
                     x=df_item['Year'],
                     y=df_item['NLI_Count'],
@@ -477,7 +524,7 @@ if dimension:
             )
 
             # PBR curve
-            fig7.add_trace(
+            fig_detail.add_trace(
                 go.Scatter(
                     x=df_item['Year'],
                     y=df_item['PBR_Count'],
@@ -490,7 +537,7 @@ if dimension:
             )
 
             # Ratio curve (PBR/NLI)
-            fig7.add_trace(
+            fig_detail.add_trace(
                 go.Scatter(
                     x=df_item['Year'],
                     y=df_item['Ratio'],
@@ -504,17 +551,18 @@ if dimension:
             )
 
         dimension_label = ' + '.join(dimension)
-        fig7.update_layout(
+        fig_detail.update_layout(
             title=f'Évolution NLI, PBR et Ratio par {dimension_label}',
             hovermode='x unified',
             legend_title=dimension_label
         )
 
-        fig7.update_xaxes(title_text='Année')
-        fig7.update_yaxes(title_text='Nombre de variétés', secondary_y=False)
-        fig7.update_yaxes(title_text='Ratio PBR/NLI', secondary_y=True)
+        fig_detail.update_xaxes(title_text='Année')
+        fig_detail.update_yaxes(title_text='Nombre de variétés', secondary_y=False)
+        fig_detail.update_yaxes(title_text='Ratio PBR/NLI', secondary_y=True)
 
-        st.plotly_chart(fig7, use_container_width=True)
+        st.plotly_chart(fig_detail, use_container_width=True)
+        pdf_figures['8. Analyse detaillee'] = fig_detail
     else:
         st.warning('Veuillez sélectionner au moins un élément dans l\'une des dimensions.')
 else:
@@ -522,3 +570,28 @@ else:
 
 st.markdown("---")
 st.markdown("*Tableau de bord basé sur les données CPVO*")
+
+# PDF Export in sidebar
+st.sidebar.markdown("---")
+st.sidebar.subheader("Export PDF")
+if st.sidebar.button("Generer le rapport PDF", type="primary"):
+    with st.spinner("Generation du PDF en cours..."):
+        try:
+            metrics_data = {
+                "Varietes affichees": f"{len(df_filtered)} sur {len(df)}",
+                "Periode": f"{year_range[0]} - {year_range[1]}",
+                "Moyenne de depot NLI": f"{avg_nli:.0f}",
+                "Moyenne de depot PBR": f"{avg_pbr:.0f}",
+                "Taux de croissance NLI": f"{tc_nli_val:+.2f}%",
+                "Taux de croissance PBR": f"{tc_pbr_val:+.2f}%",
+            }
+            pdf_bytes = generate_pdf(pdf_figures, metrics_data, year_range)
+            st.sidebar.download_button(
+                label="Telecharger le PDF",
+                data=pdf_bytes,
+                file_name=f"rapport_cpvo_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                mime="application/pdf"
+            )
+            st.sidebar.success("PDF genere!")
+        except Exception as e:
+            st.sidebar.error(f"Erreur: {str(e)}")
